@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>OLC III - Vakkenranking 2015-2016</title>
+    <link rel="stylesheet" type="text/css" media="all" href="http://olc.cs.ru.nl/assets/twentyeleven.css">
+    <style>
+        .entry-content {
+            padding: 0;
+        }
+
+        .entry-content table, .comment-content table {
+            border-bottom: none;
+        }
+
+        .entry-content td, .comment-content td {
+            padding: 7px 6px 7px 0;
+        }
+
+        .vakkenranking-bottom-border td {
+            border-bottom: 1px solid #DDD;
+        }
+
+        body {
+            background: none;
+            font: 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        table.legend {
+            width: 30%;
+        }
+
+        table.legend td {
+            border: none;
+            padding: 3px 2px 3px 0px;
+        }
+
+        td.legend-left {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<header class="entry-header">
+    <h1 class="entry-title">Vakkenranking Informatica {{ year }}-{{ year + 1 }}</h1>
+    <h2>Opleidingscommissie Informatica & Informatiekunde &lt;olc@cs.ru.nl&gt;</h2>
+    <h2>met dank aan Wouter Geraedts &lt;radboud@woutergeraedts.nl&gt;</h2>
+</header>
+<br/>
+{% set counter = [''] %} {# Jinja please,,, (http://stackoverflow.com/questions/4870346/can-a-jinja-variables-scope-extend-beyond-in-an-inner-block) #}
+<div class="entry-content" role="main">
+    {% for slice in courses|slice(3) %}
+    <table style="width: 33%;float:left;{% if loop.index > 1 %}padding-left: 2%;{% endif %}">
+        <tr>
+            <td style="text-align: center"><strong>#</strong></td>
+            <td><strong>Code</strong></td>
+            <td><strong>Naam</strong></td>
+            <td><strong>x</strong></td>
+            <td><strong>n</strong></td>
+            <td><strong>σ</strong></td>
+            <td><strong>x<sub>oud</sub></strong></td>
+            <td>&nbsp;</td>
+        </tr>
+            {% for course in slice %}
+            <tr>
+                <td style="text-align: center">{{ counter|length }} </td>
+                {% if counter.append('') %}{% endif %} {# Increment counter...  #}
+                <td>{{ course.code }}</td>
+                <td>{{ course.name }}</td>
+                <td>{{ "{0:.1f}".format(course.stats.course.mean) }}</td>
+                <td>{{ course.stats.course.n }}</td>
+                <td>{{ "{0:.1f}".format(course.stats.course.std) }}</td>
+                <td>
+                    {% if course.old_stats %}{{ "{0:.1f}".format(course.old_stats.course.mean) }}{% endif %}
+                </td>
+                <td style="text-align: center">
+                    {% if course.old_stats %}
+                        {% set diff = course.stats.course.mean - course.old_stats.course.mean %}
+                        {% set significant = not (course.stats.course.n <= 5 or course.old_stats.course.n <= 5) %}
+                        {% if diff > 1 and significant %}
+                            <div style="color: green">▲▲</div>
+                        {% elif diff > 1 and not significant %}
+                            <div style="color: #BBB">▲▲</div>
+                        {% elif diff >= 0.4 and significant %}
+                            <div style="color: green">▲</div>
+                        {% elif diff >= 0.4 and not significant %}
+                            <div style="color: #BBB">▲</div>
+                        {% elif diff < -1 and significant %}
+                            <div style="color: red">▼▼</div>
+                        {% elif diff < -1 and not significant %}
+                            <div style="color: #BBB">▼▼</div>
+                        {% elif diff <= -0.4 and significant %}
+                            <div style="color: red">▼</div>
+                        {% elif diff <= -0.4 and not significant %}
+                            <div style="color: #BBB">▼</div>
+                        {% endif %}
+                    {% else %}
+                        <div>{% if course.is_new %}!{% else %}?{% endif %}</div>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+
+    <div style="clear: both; font-size: 0;">&nbsp;</div>
+    <table class="legend">
+        <tr>
+            <td class="legend-left">▲</td>
+            <td>&rarr;</td>
+            <td>0.4 ≤ δ ≤ 1.0</td>
+        </tr>
+        <tr>
+            <td class="legend-left">▲▲</td>
+            <td>&rarr;</td>
+            <td>δ > 1.0</td>
+        </tr>
+        <tr>
+            <td class="legend-left"><span style="color: #BBB">▼ grijs</span></td>
+            <td>&rarr;</td>
+            <td>niet significant aantal deelnemers</td>
+        </tr>
+        <tr>
+            <td class="legend-left"><span style="color: red">▼ kleur</span></td>
+            <td>&rarr;</td>
+            <td>significant aantal deelnemers</td>
+        </tr>
+        <tr>
+            <td class="legend-left">!</td>
+            <td>&rarr;</td>
+            <td>cursus nieuw in {{ year }}-{{ year + 1 }}</td>
+        </tr>
+        <tr>
+            <td class="legend-left">?</td>
+            <td>&rarr;</td>
+            <td>geen enquêteresultaten uit {{ year - 1 }}-{{ year }}</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
