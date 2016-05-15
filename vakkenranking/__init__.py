@@ -1,18 +1,19 @@
 __author__ = 'Luuk Scholten'
 __email__ = 'info@luukscholten.com'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 
 def run(argv=None):
     """Vakkenranking
     Usage:
-     vakkenranking [--output=<type>] [--new-dir=<dir>] [--old-dir=<dir>]
+     vakkenranking [--output=<type>] [--new-dir=<dir>] [--old-dir=<dir>] [--mapping-file=<file>]
      vakkenranking (-h | --help)
 
-    -h --help           show this
-    --output=<type>     {html, csv} [default: html]
-    --old-dir=<dir>     directory for last years evaluations [default: old]
-    --new-dir=<dir>     directory for current evaluations [default: new]
+    -h --help               show this
+    --output=<type>         {html, csv} [default: html]
+    --old-dir=<dir>         directory for last years evaluations [default: old]
+    --new-dir=<dir>         directory for current evaluations [default: new]
+    --mapping-file=<file>   location of mapping file [default: mapping.csv]
     """
     import sys
     from docopt import docopt
@@ -23,7 +24,7 @@ def run(argv=None):
 
     # Check for the version
     if not sys.version_info >= (3, 5):
-        print('This python version is not supported. Please use python 3.4')
+        print('This python version is not supported. Please use python 3.5')
         exit(1)
 
     argv = argv or sys.argv[1:]
@@ -42,7 +43,7 @@ def run(argv=None):
     old = sc.calculate(old)
     new = sc.calculate(new)
 
-    mapper = Mapper()
+    mapper = Mapper(mapping_file=arguments['--mapping-file'])
     courses = mapper.map_courses(new, old)
 
     if arguments['--output'] == 'html':

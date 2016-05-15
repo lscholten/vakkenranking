@@ -7,8 +7,8 @@ from setuptools import setup
 reqs = ['pandas>=0.18.0', 'numpy>=1.11.0', 'docopt>=0.6.0', 'Jinja2>=2.8', 'xlrd>=0.9.4']
 
 setup(
-    name='Vakkenranking',
-    version='0.1.2',
+    name='vakkenranking',
+    version='0.1.3',
     packages=['vakkenranking'],
     install_requires=reqs,
     entry_points={

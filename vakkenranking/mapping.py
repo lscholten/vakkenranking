@@ -3,12 +3,12 @@ import os
 
 class Mapper(object):
 
-    def __init__(self):
-        if not os.path.exists('data/mapping.csv'):
+    def __init__(self, mapping_file='mapping.csv'):
+        if not os.path.exists(mapping_file):
             print('Mapping file missing, cannot continue.')
             exit(1)
 
-        with open('data/mapping.csv', 'r') as mapping:
+        with open(mapping_file, 'r') as mapping:
             self.mapping = { kv[0]:kv[1] for kv in (line.strip().split(",") for line in mapping.readlines()) }
 
     def map_courses(self, new, old):
