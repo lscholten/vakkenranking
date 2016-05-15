@@ -6,11 +6,13 @@ __version__ = '0.0.1'
 def run(argv=None):
     """Vakkenranking
     Usage:
-     vakkenranking [--output=<type>]
+     vakkenranking [--output=<type>] [--new-dir=<dir>] [--old-dir=<dir>]
      vakkenranking (-h | --help)
 
     -h --help           show this
     --output=<type>     {html, csv} [default: html]
+    --old-dir=<dir>     directory for last years evaluations [default: old]
+    --new-dir=<dir>     directory for current evaluations [default: new]
     """
     import sys
     from docopt import docopt
@@ -33,8 +35,8 @@ def run(argv=None):
         exit(1)
 
     parser = Parser()
-    old = parser.parse('data/old')
-    new = parser.parse('data/new')
+    old = parser.parse(arguments['--old-dir'])
+    new = parser.parse(arguments['--new-dir'])
 
     sc = StatsCalculator()
     old = sc.calculate(old)
