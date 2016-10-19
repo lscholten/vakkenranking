@@ -8,7 +8,7 @@ reqs = ['pandas>=0.18.0', 'numpy>=1.11.0', 'docopt>=0.6.0', 'Jinja2>=2.8', 'xlrd
 
 setup(
     name='vakkenranking',
-    version='0.1.5',
+    version='0.2.0',
     packages=['vakkenranking'],
     install_requires=reqs,
     entry_points={
